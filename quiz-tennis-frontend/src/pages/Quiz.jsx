@@ -2,11 +2,25 @@ import React, { useEffect } from "react";
 import { Container, ListGroup, ListGroupItem } from "react-bootstrap";
 import { useState } from "react";
 
+const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+
 const Quiz = () => {
     
     const options = {
         border: 'solid rgba(0.5,0.5,0.5,0.2)',
         borderRadius: "10px", 
+    };
+
+    const correct = {
+        border: 'solid rgba(0.5,0.5,0.5,0.2)',
+        borderRadius: "10px",
+        background: "#00ff00"
+    };
+
+    const wrong = {
+        border: 'solid rgba(0.5,0.5,0.5,0.2)',
+        borderRadius: "10px",
+        background: "#ff0000"
     };
     
     const question_style = {
@@ -21,9 +35,9 @@ const Quiz = () => {
         margin: "auto",
     }
     
-    const onClickNext = (correctAnswer, answer) => {
-        setActiveQuestion((prev) => prev + 1);
-
+    const onClickNext = async (correctAnswer, answer, index) => {
+        setSelectedAnswerIndex(index)
+        
         if(answer === correctAnswer) {
             setSelectedAnswer(true)
             console.log('right')
@@ -32,16 +46,33 @@ const Quiz = () => {
             setSelectedAnswer(false)
             console.log('wrong')
         }
+        
+        setResult((prev) =>
+            selectedAnswer ? {
+                ...prev,
+                score: prev.score + 5,
+                correctAnswers: prev.correctAnswers + 1
+            }
+            : {
+                ...prev,
+                wrongAnswers: prev.wrongAnswers + 1
+            }
+        )
+            
+        await sleep(1000)
+        setActiveQuestion((prev) => prev + 1);
+        setSelectedAnswerIndex(null)
     };
     
     const [questions, setQuestions] = useState([]);
     const [activeQuestion, setActiveQuestion] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState('')
-    /*const [result, setResult] = useState({
+    const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null)
+    const [result, setResult] = useState({
         score: 0,
         correctAnswers: 0,
         wrongAnswers: 0,
-    })*/
+    })
     
     useEffect(() => {
         fetch('http://localhost:3001/api/questions')
@@ -59,8 +90,10 @@ const Quiz = () => {
                         {questions[activeQuestion].question}
                     </h3>
                     <ListGroup vertical>
-                        {questions[activeQuestion].choices.map((answer) => (
-                            <ListGroupItem variant="secondary" className="mt-3" style={options} action onClick={() => onClickNext(questions[activeQuestion].correctAnswer, answer)}>
+                        {questions[activeQuestion].choices.map((answer, index) => (
+                            <ListGroupItem variant="secondary" className="mt-3"
+                            style={(selectedAnswerIndex === index) && selectedAnswer ? correct : (selectedAnswerIndex === index) && !selectedAnswer ? wrong : options} 
+                            action onClick={() => onClickNext(questions[activeQuestion].correctAnswer, answer, index)}>
                                 {answer}
                             </ListGroupItem>
                         ))}
