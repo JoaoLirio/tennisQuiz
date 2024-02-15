@@ -1,10 +1,13 @@
 import React, { useEffect } from "react";
 import { Container, ListGroup, ListGroupItem } from "react-bootstrap";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
 
 const Quiz = () => {
+
+    const navigate = useNavigate();
     
     const options = {
         border: 'solid rgba(0.5,0.5,0.5,0.2)',
@@ -60,7 +63,13 @@ const Quiz = () => {
         )
             
         await sleep(1000)
-        setActiveQuestion((prev) => prev + 1);
+        if(activeQuestion === questions.length - 1) {
+            console.log("FINISHED");
+            navigate("/")
+        }
+        else {
+            setActiveQuestion((prev) => prev + 1);
+        }
         setSelectedAnswerIndex(null)
     };
     
