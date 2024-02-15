@@ -64,7 +64,6 @@ const Quiz = () => {
             
         await sleep(1000)
         if(activeQuestion === questions.length - 1) {
-            console.log("FINISHED");
             navigate("/")
         }
         else {
