@@ -5,6 +5,7 @@ import './App.css';
 
 import Menu from './pages/Menu';
 import Quiz from './pages/Quiz';
+import Result from './pages/Result';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path='/' Component={Menu} />
           <Route path='/quiz' Component={Quiz} />
+          <Route path='/quiz/result' Component={Result} />
         </Routes>
       </div>
     </Router>

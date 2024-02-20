@@ -43,30 +43,24 @@ const Quiz = () => {
         
         if(answer === correctAnswer) {
             setSelectedAnswer(true)
-            console.log('right')
-        }
-        else {
-            setSelectedAnswer(false)
-            console.log('wrong')
-        }
-        
-        setResult((prev) =>
-            selectedAnswer ? {
+
+            setResult((prev) => ({
                 ...prev,
                 score: prev.score + 5,
                 correctAnswers: prev.correctAnswers + 1
-            }
-            : {
-                ...prev,
-                wrongAnswers: prev.wrongAnswers + 1
-            }
-        )
-            
-        await sleep(1000)
-        if(activeQuestion === questions.length - 1) {
-            navigate("/")
+            }))
         }
         else {
+            setSelectedAnswer(false)
+
+            setResult((prev) => ({
+                ...prev,
+                wrongAnswers: prev.wrongAnswers + 1
+            }))
+        }
+
+        await sleep(1000)
+        if(activeQuestion < questions.length - 1) {
             setActiveQuestion((prev) => prev + 1);
         }
         setSelectedAnswerIndex(null)
@@ -87,8 +81,22 @@ const Quiz = () => {
         .then(response => response.json())
         .then(data => setQuestions(data))
         .catch(error => console.error('Error fetching questions: ', error));
-    }, []);
 
+        const handleNavigation = async () => {
+            if (activeQuestion === questions.length - 1) {
+                console.log(result);
+                navigate("/quiz/result", {
+                    state: {
+                        questions: questions, 
+                        result: result
+                    }
+                });
+            }
+        };
+    
+        handleNavigation();
+        // eslint-disable-next-line
+    }, [result]);
 
     return (
         <Container style={main}>
