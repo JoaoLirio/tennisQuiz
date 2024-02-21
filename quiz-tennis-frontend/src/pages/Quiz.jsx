@@ -29,7 +29,7 @@ const Quiz = () => {
     const question_style = {
         border: 'solid rgba(0.5,0.5,0.5,0.2)',
         borderRadius: "10px",
-        backgroundColor: "#2F6BC1",
+        backgroundColor: "#E3783B",
         color: "#FFFFFF",
     };
     
@@ -43,7 +43,6 @@ const Quiz = () => {
         
         if(answer === correctAnswer) {
             setSelectedAnswer(true)
-
             setResult((prev) => ({
                 ...prev,
                 score: prev.score + 5,
@@ -52,7 +51,6 @@ const Quiz = () => {
         }
         else {
             setSelectedAnswer(false)
-
             setResult((prev) => ({
                 ...prev,
                 wrongAnswers: prev.wrongAnswers + 1
@@ -83,6 +81,7 @@ const Quiz = () => {
         .catch(error => console.error('Error fetching questions: ', error));
 
         const handleNavigation = async () => {
+            await sleep(1000)
             if (activeQuestion === questions.length - 1) {
                 console.log(result);
                 navigate("/quiz/result", {
@@ -99,7 +98,7 @@ const Quiz = () => {
     }, [result]);
 
     return (
-        <Container style={main}>
+        <Container style={main} className="d-flex flex-column justify-content-center align-items-center text-center vh-100">
             {questions.length > 0 && ( // Check if questions array is not empty
                 <div>
                     <h3 className="text-center p-3 mb-4 mt-5" style={question_style}>
