@@ -61,11 +61,13 @@ const Quiz = () => {
         if(activeQuestion < questions.length - 1) {
             setActiveQuestion((prev) => prev + 1);
         }
+        //setAllAnswers([activeQuestion.correctAnswer, ...activeQuestion.incorrectAnswers].sort((a,b) => a < b ? -1 : 1))
         setSelectedAnswerIndex(null)
     };
     
     const [questions, setQuestions] = useState([]);
     const [activeQuestion, setActiveQuestion] = useState(0);
+    const [allAnswers, setAllAnswers] = useState([]);
     const [selectedAnswer, setSelectedAnswer] = useState('')
     const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null)
     const [result, setResult] = useState({
@@ -75,11 +77,19 @@ const Quiz = () => {
     })
     
     useEffect(() => {
-        fetch('http://localhost:3001/api/questions')
+        fetch('https://the-trivia-api.com/api/questions?tags=tennis')
         .then(response => response.json())
         .then(data => setQuestions(data))
         .catch(error => console.error('Error fetching questions: ', error));
+    }, []);
 
+    useEffect(() => {
+        if (questions.length > 0) {
+            setAllAnswers([questions[activeQuestion].correctAnswer, ...questions[activeQuestion].incorrectAnswers].sort((a,b) => a < b ? -1 : 1))
+        }
+    }, [questions, activeQuestion]);
+
+    useEffect(() => {
         const handleNavigation = async () => {
             await sleep(1000)
             if (activeQuestion === questions.length - 1) {
@@ -105,13 +115,13 @@ const Quiz = () => {
                         {questions[activeQuestion].question}
                     </h3>
                     <ListGroup vertical>
-                        {questions[activeQuestion].choices.map((answer, index) => (
+                        {allAnswers.map((answer, index) => 
                             <ListGroupItem variant="secondary" className="mt-3"
                             style={(selectedAnswerIndex === index) && selectedAnswer ? correct : (selectedAnswerIndex === index) && !selectedAnswer ? wrong : options} 
                             action onClick={() => onClickNext(questions[activeQuestion].correctAnswer, answer, index)}>
                                 {answer}
                             </ListGroupItem>
-                        ))}
+                        )}
                     </ListGroup>
                 </div>
             )}
