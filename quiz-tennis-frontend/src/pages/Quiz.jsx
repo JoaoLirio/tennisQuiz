@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, ListGroup, ListGroupItem } from "react-bootstrap";
-import { useState } from "react";
 import { useNavigate } from "react-router";
 
 const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
@@ -112,7 +111,7 @@ const Quiz = () => {
             {questions.length > 0 && ( // Check if questions array is not empty
                 <div>
                     <h3 className="text-center p-3 mb-4 mt-5" style={question_style}>
-                        {questions[activeQuestion].question}
+                        {activeQuestion + 1 + '. ' + questions[activeQuestion].question}
                     </h3>
                     <ListGroup vertical>
                         {allAnswers.map((answer, index) => 

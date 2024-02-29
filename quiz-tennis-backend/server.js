@@ -1,38 +1,39 @@
 const express = require('express');
-const app = express();
-const port = 3001; // or any other port you prefer
-
 const cors = require('cors');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const Leaderboard = require('./models/Leaderboard');
+
+const app = express();
+
 app.use(cors());
 
-/*export const quiz = {
-  topic: 'Javascript',
-  level: 'Beginner',
-  totalQuestions: 4,
-  perQuestionScore: 5,
-  
-}*/
-app.get('/api/questions', (req, res) => {
-  const questions = [
-    { 
-      id: 1,
-      question: 'Who won the last Wimbledon Men\'s Singles?',
-      choices: ['Nadal', 'Sinner', 'Djokovic', 'Alcaraz'],
-      correctAnswer: 'Alcaraz',
-    },
-    { 
-      id: 2,
-      question: 'In which year was the US Open first held?',
-      choices: ['1881', '1893', '1900', '1912'],
-      correctAnswer: '1881'
-       },
-  ];
+mongoose.connect('mongodb://localhost/leaderboard', {});
 
-  res.json(questions);
+app.use(bodyParser.json());
+
+//POST saves score to database
+app.post('/leaderboard', async (req, res) => {
+  try {
+    const {playerName, score} = req.body;
+    const leaderboardEntry = new Leaderboard({ playerName, score });
+    await leaderboardEntry.save();
+    res.status(201).send('Leaderboard entry saved successfully');
+  } catch (err) {
+    res.status(500).send('Error saving leaderboard entry');
+  }
+})
+
+//GET returns top 10 scores
+app.get('/leaderboard', async (req, res) => {
+  try {
+    const leaderboard = await Leaderboard.find().sort({ score: -1 }).limit(10);
+    res.json(leaderboard);
+  } catch (error) {
+    res.status(500).send('Error fetching leaderboard data');
+  }
 })
 
 
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+const PORT =  process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
