@@ -116,7 +116,8 @@ const Quiz = () => {
                     <ListGroup vertical>
                         {allAnswers.map((answer, index) => 
                             <ListGroupItem variant="secondary" className="mt-3"
-                            style={(selectedAnswerIndex === index) && selectedAnswer ? correct : (selectedAnswerIndex === index) && !selectedAnswer ? wrong : options} 
+                            style={(selectedAnswerIndex != null) && answer === questions[activeQuestion].correctAnswer ? correct : 
+                                (selectedAnswerIndex === index) && !selectedAnswer ? wrong : options} 
                             action onClick={() => onClickNext(questions[activeQuestion].correctAnswer, answer, index)}>
                                 {answer}
                             </ListGroupItem>

@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
-import { Container, Table } from "react-bootstrap";
+import { Button, Container, Table } from "react-bootstrap";
+import { ArrowLeft } from 'react-bootstrap-icons'
 
 const Leaderboard = () => {
     const [data, setData] = useState([])
@@ -17,9 +18,13 @@ const Leaderboard = () => {
 
 
     return (
+        <>
+        <Button className="p-1 m-2" style={{ backgroundColor: "#E3783B", borderColor: "#E3783B", borderRadius: "100%" }} href="/">
+            <ArrowLeft style={{ fontSize: "200%"}}/>
+        </Button>
         <Container className="w-25 d-flex flex-column justify-content-center align-items-center text-center vh-100">
             <h1 className="m-4">Leaderboard</h1>
-            {loading? <p>Loading...</p> :
+            {loading ? <p>Loading...</p> :
                 <Table striped bordered hover>
                     <thead>
                         <tr>
@@ -37,9 +42,8 @@ const Leaderboard = () => {
                             </tr>
                         ))}
                     </tbody>
-                </Table>
-            }
-        </Container>
+                </Table>}
+        </Container></>
     )
 }
 
